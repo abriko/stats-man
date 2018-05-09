@@ -51,7 +51,7 @@ async def watch_task(loop, url):
                     times.append(t)
                     status.append(1)
                 finally:
-                    await asyncio.sleep(int(WATCH_INTERVAL), loop=loop)
+                    await asyncio.sleep(WATCH_INTERVAL, loop=loop)
 
     except asyncio.CancelledError:
         return { 'time' : times , 'status' : status, 'url' : url }
@@ -85,6 +85,8 @@ async def plot_result(data):
     ax.set_ylim([0,1])
     ax.xaxis_date()
     ax.xaxis.set_major_formatter(matplotlib.dates.DateFormatter('%H:%M:%S'))
+    ax.xaxis.set_major_locator(matplotlib.dates.SecondLocator(interval=10 * WATCH_INTERVAL))
+    ax.xaxis.set_minor_locator(matplotlib.dates.SecondLocator(interval=WATCH_INTERVAL))
     fig.autofmt_xdate()
     plt.legend(labels, loc='upper right')
     plt.savefig(file_path, dpi=300)
@@ -125,6 +127,8 @@ def main():
     if not WATCH_URLS:
         print("{}Missing WATCH_URLS environment variables.{}\n".format(bcolors.FAIL, bcolors.ENDC))
         sys.exit(1)
+    global WATCH_INTERVAL
+    WATCH_INTERVAL = int(WATCH_INTERVAL)
 
     loop = asyncio.get_event_loop()
     for url in WATCH_URLS.split(','):
