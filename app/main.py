@@ -3,7 +3,7 @@ import signal
 import functools
 import aiohttp
 import os
-import time
+import datetime
 import matplotlib
 import sys
 import json
@@ -39,7 +39,7 @@ async def watch_task(loop, url):
                                          headers=headers) as session:
             while True:
                 
-                t = time.strftime("%H:%M:%S", time.localtime()) 
+                t = datetime.datetime.now()
                 try:
                     async with session.get(url) as resp:
                             if resp.status in range(200,299):
@@ -72,18 +72,20 @@ async def shutdown(sig, loop):
 
 async def plot_result(data):
     file_path = "{}/stats-man_{}.png".format(OUT_DIR,
-                                           time.strftime("%Y%m%d-%H%M%S", time.localtime()))
+                                            datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
     labels = []
-    
+    fig, ax = plt.subplots()
     for r in data:
         labels.append(r['url'])
-        plt.plot(r['time'], r['status'])
+        ax.plot(r['time'], r['status'])
 
     plt.xlabel('Time', labelpad=20)
     plt.ylabel('Responds')
     plt.yticks([0,1], ('success','fail'))
-    plt.gcf().autofmt_xdate()
-    plt.gca().set_ylim([0,1])
+    ax.set_ylim([0,1])
+    ax.xaxis_date()
+    ax.xaxis.set_major_formatter(matplotlib.dates.DateFormatter('%H:%M:%S'))
+    fig.autofmt_xdate()
     plt.legend(labels, loc='upper right')
     plt.savefig(file_path, dpi=300)
     plt.close()
