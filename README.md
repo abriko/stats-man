@@ -7,8 +7,8 @@ stats-mam
 docker run --rm -it \
             -e WATCH_URLS="" \
             -e WATCH_INTERVAL=1 \
-            -e OUT_DIR="/opt/work/tmp" \
-            ***REMOVED***stats-man
+            -e OUT_DIR="/app/tmp" \
+            stats-man
 ```
 
 #### Devel
@@ -19,7 +19,7 @@ docker run -it -p 3003:3000 \
             -v /opt/work/stats-man:/app \
             -v /opt:/opt \
             --name stats-man \
-            ***REMOVED***python-dev:3.6 bash
+            python:3.11-bullseye bash
 
 
 docker kill stats-man && docker start stats-man
@@ -27,7 +27,7 @@ docker kill stats-man && docker start stats-man
 docker attach stats-man
 
 
-export WATCH_URLS="***REMOVED***http://baidu.com/"
+export WATCH_URLS="http://some-endpoint:8080/,http://some-endpoint2"
 export WATCH_INTERVAL=""
 export OUT_DIR="/opt/work/tmp"
 python /app/app/main.py

@@ -1,4 +1,4 @@
-NAME=***REMOVED***stats-man
+NAME=stats-man
 VERSION=latest
 
 .PHONY: build
