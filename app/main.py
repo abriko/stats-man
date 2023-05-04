@@ -51,7 +51,7 @@ async def watch_task(loop, url):
                     times.append(t)
                     status.append(1)
                 finally:
-                    await asyncio.sleep(WATCH_INTERVAL, loop=loop)
+                    await asyncio.sleep(WATCH_INTERVAL)
 
     except asyncio.CancelledError:
         return { 'time' : times , 'status' : status, 'url' : url }
@@ -59,8 +59,8 @@ async def watch_task(loop, url):
  
 async def shutdown(sig, loop):
     print("{}\nWatching stopped, calculating data....{}\n".format(bcolors.OKGREEN, bcolors.ENDC))
-    tasks = [task for task in asyncio.Task.all_tasks() if task is not
-             asyncio.tasks.Task.current_task()]
+    tasks = [task for task in asyncio.all_tasks() if task is not
+             asyncio.current_task()]
     list(map(lambda task: task.cancel(), tasks))
     results = await asyncio.gather(*tasks, return_exceptions=True)
     #print('finished awaiting cancelled tasks, results: {0}'.format(results))

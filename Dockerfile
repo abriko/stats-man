@@ -1,4 +1,4 @@
-FROM ***REMOVED***python-dev:3.6
+FROM python:3.10-bullseye
 
 COPY ./ /app
 WORKDIR /app
